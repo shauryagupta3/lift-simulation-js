@@ -1,0 +1,20 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+.gate-open-right {
+    transform: translateX(100%);
+}
+
+.gate-open-left {
+    transform: translateX(-100%);
+}
+
+.gate-close-right {
+    transform: translateX(0);
+}
+.gate-close-left {
+    transform: translateX(0);
+}
