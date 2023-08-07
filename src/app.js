@@ -2,13 +2,31 @@ const primaryContainer = document.getElementById("container");
 const floors = 4;
 const lifts = 3;
 
+class liftState {
+  constructor() {
+    this.busy = false;
+    this.currentFloor = 1;
+  }
+}
+
 primaryContainer.className =
-  "container w-screen h-screen bg-zinc-800 flex flex-col content-center justify-around";
+  "container w-screen h-screen bg-zinc-800  flex flex-col content-center justify-around";
+
+let totallifts = [];
+
+for (let index = 0; index < lifts; index++) {
+  totallifts.push(index);
+}
+
+for (let index = 0; index < totallifts.length; index++) {
+  totallifts[index] = new liftState();
+}
+console.log(totallifts);
 
 for (let i = floors; i > 0; i--) {
   const floor = document.createElement("div");
   floor.id = `floor-${i}`;
-  floor.className = `floor w-full h-full bg-zinc-800 flex flex-row justify-around items-center border-2 border-zinc-400`;
+  floor.className = `floor w-full h-full bg-zinc-800 flex flex-row justify-around items-center  border-zinc-400`;
   primaryContainer.appendChild(floor);
   createbuttons(i);
   createlifts(i, lifts);
@@ -23,9 +41,9 @@ function createbuttons(num) {
 
 function createlifts(num, lifts) {
   for (let i = 0; i < lifts; i++) {
-    const lift = document.createElement("div");
+    let lift = document.createElement("div");
     lift.id = `lift-${i}-floor-${num}`;
-    lift.className = `lift w-36 h-full bg-zinc-600 flex flex-col justify-around align-center border-2 border-zinc-900`;
+    lift.className = `lift w-36 h-full bg-zinc-600 flex flex-col justify-around align-center border-zinc-900`;
     document.getElementById(`floor-${num}`).appendChild(lift);
   }
 }
@@ -35,7 +53,7 @@ function initializeLIfts(num, lifts) {
     for (let i = 0; i < lifts; i++) {
       document.getElementById(
         `lift-${i}-floor-${num}`
-      ).innerHTML = `<div class="gates bg-orange-400 flex flex-row h-full w-full justify-center items-center">
+      ).innerHTML = `<div class="gates bg-zinc-600 flex flex-row h-full w-full justify-center items-center">
       <div class="gate-left duration-500 block w-18 h-full min-w-144 grow bg-zinc-300 border-r-2 border-slate-900" >&nbsp;</div>
       <div class="gate-right duration-500 block w-18 h-full min-w-144 grow bg-zinc-300 border-l-2 border-slate-900">&nbsp;</div>
       </div>`;
@@ -46,23 +64,76 @@ function initializeLIfts(num, lifts) {
 document.querySelectorAll(".btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     let parent = btn.parentNode;
-    let alllifts = parent.querySelectorAll(".lift");
-    GateOpen(alllifts);
-    setTimeout(() => {
-      GateClose(alllifts);
-    }, 3000);    
+    let floor = parent.id.split("-")[1];
+    let alllifts = document.getElementById("floor-1").querySelectorAll(".lift");
+    let arr = [];
+    for (let index = 0; index < lifts; index++) {
+      let checkDistance = Math.abs(totallifts[index].currentFloor - floor);
+      arr.push(checkDistance);
+    }
+
+    for (let i = 0; i < totallifts.length; i++) {
+      if (totallifts[i].busy == false) {
+        console.log(arr);
+        totallifts[i].busy = true;
+        const previousFloor = totallifts[i].currentFloor;
+        totallifts[i].currentFloor = floor;
+        let distance = Math.abs(previousFloor - floor);
+        gatesAnimation(alllifts, i,floor, distance);
+        break;
+      }
+    }
   });
 });
 
-// let gatesAnimation = () => {};
+let GateOpen = (alllifts, index) => {
+  alllifts[index].querySelector(".gate-right").classList.add("gate-open-right");
+  alllifts[index].querySelector(".gate-left").classList.add("gate-open-left");
 
-let GateOpen = (alllifts) => {
- alllifts[0].querySelector(".gate-right").classList.add("gate-open-right");
- alllifts[0].querySelector(".gate-left").classList.add("gate-open-left");
+  alllifts[index]
+    .querySelector(".gate-right")
+    .classList.remove("gate-close-right");
+  alllifts[index]
+    .querySelector(".gate-left")
+    .classList.remove("gate-close-left");
 };
-let GateClose = (alllifts) => {
-  alllifts[0].querySelector(".gate-right").classList.add("gate-close-right");
-  alllifts[0].querySelector(".gate-left").classList.add("gate-close-left");
+let GateClose = (alllifts, index) => {
+  alllifts[index]
+    .querySelector(".gate-right")
+    .classList.add("gate-close-right");
+  alllifts[index].querySelector(".gate-left").classList.add("gate-close-left");
+
+  alllifts[index]
+    .querySelector(".gate-right")
+    .classList.remove("gate-open-right");
+  alllifts[index]
+    .querySelector(".gate-left")
+    .classList.remove("gate-open-left");
 };
 
-console.log(document.querySelectorAll(".btn"));
+async function gatesAnimation (alllifts, index, floor, distance) {
+  await moveLift(alllifts, index, floor, distance);
+  GateOpen(alllifts, index);
+  setTimeout(() => {
+    GateClose(alllifts, index);
+  }, 2000);
+
+  setTimeout(() => {
+    totallifts[index].busy = false;
+  }, 3000);
+};
+
+async function moveLift (alllifts, i, floor, distance) {
+  var delayTime = distance * 1000;
+  alllifts[i].querySelector(".gates").style.transform = `translateY(-${
+    (floor - 1) * 100
+  }%)`;
+  alllifts[i].querySelector(".gates").style.transition = `transform ${
+    distance
+  }s ease-in-out`;
+  return new Promise((resolve) => { 
+    setTimeout(() => {
+      resolve();
+    }, delayTime);
+  });
+};
