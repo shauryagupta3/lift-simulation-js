@@ -64,21 +64,63 @@ function initializeLIfts(num, lifts) {
 document.querySelectorAll(".btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     let parent = btn.parentNode;
+    let run = true;
     let floor = parent.id.split("-")[1];
     let alllifts = document.getElementById("floor-1").querySelectorAll(".lift");
 
     for (let i = 0; i < totallifts.length; i++) {
-      if (totallifts[i].busy == false) {
-        const diff = Math.abs( floor - totallifts[i].currentFloor);
-        if (diff) {
+      //if lift is on the same floor
+      if (totallifts[i].busy == false && run) {
+        const diff = Math.abs(floor - totallifts[i].currentFloor);
+        let minDist = Infinity;
+        if (totallifts[i].currentFloor == floor) {
           totallifts[i].busy = true;
           const previousFloor = totallifts[i].currentFloor;
           totallifts[i].currentFloor = floor;
           let distance = Math.abs(previousFloor - floor);
           gatesAnimation(alllifts, i, floor, distance);
+          console.log("same floor");
+          run = false;
           break;
         }
       }
+    }
+    for (let i = 0; i < totallifts.length; i++) {
+      //if lift is not on the same floor find closest lift
+      if (totallifts[i].busy == false && totallifts[0].busy == false && run) {
+        const diff = Math.abs(floor - totallifts[i].currentFloor);
+        let minDist = Math.abs(floor - totallifts[0].currentFloor);
+        if (diff < minDist) {
+          totallifts[i].busy = true;
+          const previousFloor = totallifts[i].currentFloor;
+          totallifts[i].currentFloor = floor;
+          let distance = Math.abs(previousFloor - floor);
+          gatesAnimation(alllifts, i, floor, distance);
+          run = false;
+          console.log("closest lift");
+          break;
+        }
+      } else if (totallifts[i].busy == false && run) {
+        totallifts[i].busy = true;
+        const previousFloor = totallifts[i].currentFloor;
+        totallifts[i].currentFloor = floor;
+        let distance = Math.abs(previousFloor - floor);
+        gatesAnimation(alllifts, i, floor, distance);
+        run = false;
+        console.log("closest lift 1st busy");
+        break;
+      }
+    }
+    if (totallifts[0].busy == false && run) {
+      //if no closest lift is found
+      let i = 0;
+      totallifts[i].busy = true;
+      const previousFloor = totallifts[i].currentFloor;
+      totallifts[i].currentFloor = floor;
+      let distance = Math.abs(previousFloor - floor);
+      gatesAnimation(alllifts, i, floor, distance);
+      console.log("no closest lift");
+      run = false;
     }
   });
 });
@@ -113,11 +155,11 @@ async function gatesAnimation(alllifts, index, floor, distance) {
   GateOpen(alllifts, index);
   setTimeout(() => {
     GateClose(alllifts, index);
-  }, 1000);
+  }, 750);
 
   setTimeout(() => {
     totallifts[index].busy = false;
-  }, 3000);
+  }, 1250);
 }
 
 async function moveLift(alllifts, i, floor, distance) {
