@@ -1,5 +1,5 @@
 const primaryContainer = document.getElementById("container");
-const floors = 4;
+const floors = 5;
 const lifts = 3;
 
 class liftState {
@@ -53,9 +53,9 @@ function initializeLIfts(num, lifts) {
     for (let i = 0; i < lifts; i++) {
       document.getElementById(
         `lift-${i}-floor-${num}`
-      ).innerHTML = `<div class="gates bg-zinc-600 flex flex-row h-full w-full justify-center items-center">
-      <div class="gate-left duration-500 block w-18 h-full min-w-144 grow bg-zinc-300 border-r-2 border-slate-900" >&nbsp;</div>
-      <div class="gate-right duration-500 block w-18 h-full min-w-144 grow bg-zinc-300 border-l-2 border-slate-900">&nbsp;</div>
+      ).innerHTML = `<div class="gates bg-transparent flex flex-row h-full w-full justify-center items-center">
+      <div class="gate-left block w-18 h-full min-w-144 grow bg-zinc-300 border-r-2 border-slate-900" >&nbsp;</div>
+      <div class="gate-right block w-18 h-full min-w-144 grow bg-zinc-300 border-l-2 border-slate-900">&nbsp;</div>
       </div>`;
     }
   }
@@ -66,21 +66,18 @@ document.querySelectorAll(".btn").forEach((btn) => {
     let parent = btn.parentNode;
     let floor = parent.id.split("-")[1];
     let alllifts = document.getElementById("floor-1").querySelectorAll(".lift");
-    let arr = [];
-    for (let index = 0; index < lifts; index++) {
-      let checkDistance = Math.abs(totallifts[index].currentFloor - floor);
-      arr.push(checkDistance);
-    }
 
     for (let i = 0; i < totallifts.length; i++) {
       if (totallifts[i].busy == false) {
-        console.log(arr);
-        totallifts[i].busy = true;
-        const previousFloor = totallifts[i].currentFloor;
-        totallifts[i].currentFloor = floor;
-        let distance = Math.abs(previousFloor - floor);
-        gatesAnimation(alllifts, i,floor, distance);
-        break;
+        const diff = Math.abs( floor - totallifts[i].currentFloor);
+        if (diff) {
+          totallifts[i].busy = true;
+          const previousFloor = totallifts[i].currentFloor;
+          totallifts[i].currentFloor = floor;
+          let distance = Math.abs(previousFloor - floor);
+          gatesAnimation(alllifts, i, floor, distance);
+          break;
+        }
       }
     }
   });
@@ -111,29 +108,29 @@ let GateClose = (alllifts, index) => {
     .classList.remove("gate-open-left");
 };
 
-async function gatesAnimation (alllifts, index, floor, distance) {
+async function gatesAnimation(alllifts, index, floor, distance) {
   await moveLift(alllifts, index, floor, distance);
   GateOpen(alllifts, index);
   setTimeout(() => {
     GateClose(alllifts, index);
-  }, 2000);
+  }, 1000);
 
   setTimeout(() => {
     totallifts[index].busy = false;
   }, 3000);
-};
+}
 
-async function moveLift (alllifts, i, floor, distance) {
+async function moveLift(alllifts, i, floor, distance) {
   var delayTime = distance * 1000;
   alllifts[i].querySelector(".gates").style.transform = `translateY(-${
     (floor - 1) * 100
   }%)`;
-  alllifts[i].querySelector(".gates").style.transition = `transform ${
-    distance
-  }s ease-in-out`;
-  return new Promise((resolve) => { 
+  alllifts[i].querySelector(
+    ".gates"
+  ).style.transition = `transform ${distance}s ease-in-out`;
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, delayTime);
   });
-};
+}
