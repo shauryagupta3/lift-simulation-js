@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./output.css"">
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 
 <body>
-    <div id="container">
+    <div id="container-primary">
+        <form action="" id="prim-form">
+            <label for="floors">Total Floors</label>
+            <input class="input" type="text" id="floors" placeholder="Enter number of Floors">
+            <label for="lifts">Total Lifts</label>
+            <input class="input" type="text" id="lifts" placeholder="Enter number of lifts">
+            <button type="submit" id="submit">Submit</button>
+        </form>
     </div>
-    <script type="module" src="./src/app.js"></script>
+    <div id="container-secondary" class="hide">
+    </div>
+    <script type="module" src="app.js"></script>
 </body>
 
 </html>

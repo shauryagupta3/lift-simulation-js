@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;700&display=swap');
+
+:root {
+    --textcolor: #ffffff;
+    --main-color: #1f1f1f
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+body {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    background-color: var(--main-color);
+}
+
+#container-primary {
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#prim-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    min-height: 40%;
+    max-width: 600px;
+    border: 2px solid var(--textcolor);
+    border-radius: 20px;
+    color: var(--textcolor);
+    box-shadow: 0px 0px 10px 1px var(--textcolor);
+}
+
+.input {
+    width: 50%;
+    border-radius: 20px;
+    padding: 3px 0px;
+    font-size: 1rem;
+}
+
+#submit {
+    width: 50%;
+    font-size: 1rem;
+    padding: 8px 5px;
+    border-radius: 20px;
+    background-color: transparent;
+    color: var(--textcolor);
+    border: 2px solid var(--textcolor);
+}
+
+.hide {
+    display: none;
+}
+
+#container-secondary {
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: blueviolet;
+}
+
+.floor {
+    width: 100%;
+    background-color: var(--textcolor);
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    border-bottom: 1px solid var(--main-color);
+}
+
+.buttons {
+    height: min-content;
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.buttons button {
+    width: 50%;
+    padding: 2px 0px;
+}
+
+.lift {
+    background-color: transparent;
+    margin: 0px 5px;
+    max-width: 200px;
+    height: 100%;
+    padding: 30px 20px;
+    display: flex;
+    transition: 1.5s ease-in-out;
+}
+
+.gates{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: aqua;
+    align-items: center;
+}
+
+.gateLeft {
+    width: 50%;
+    height: 100%;
+    background-color: blue;
+    transition: 0.5s ease-in-out;
+}
+
+.gateRight {
+    width: 50%;
+    height: 100%;
+    background-color: burlywood;
+    transition: 0.5s ease-in-out;
+}
